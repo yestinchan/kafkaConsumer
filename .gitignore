@@ -11,3 +11,4 @@ build/
 hs_err_pid*
 
 *.iml
+data/

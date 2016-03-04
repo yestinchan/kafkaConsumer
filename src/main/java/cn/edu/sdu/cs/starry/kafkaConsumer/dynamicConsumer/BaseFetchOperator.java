@@ -171,12 +171,14 @@ public abstract class BaseFetchOperator {
      */
     public long fetchOffset(SimpleConsumer consumer, String topic, int partitionId, long time) throws KafkaErrorException {
         Map<TopicAndPartition, PartitionOffsetRequestInfo> requestInfo = new HashMap<>();
-        OffsetRequest offsetRequest = new OffsetRequest(requestInfo, kafka.api.OffsetRequest.CurrentVersion(), clientName);
         requestInfo.put(new TopicAndPartition(topic, partitionId), new PartitionOffsetRequestInfo(time, 1));
+        OffsetRequest offsetRequest = new OffsetRequest(requestInfo, kafka.api.OffsetRequest.CurrentVersion(), clientName);
         OffsetResponse offsetResponse = consumer.getOffsetsBefore(offsetRequest);
         if (offsetResponse.hasError()) {
             throw new KafkaErrorException(ErrorMapping.exceptionFor(offsetResponse.errorCode(topic, partitionId)), offsetResponse.errorCode(topic, partitionId), consumer, topic, partitionId, "fetchOffset, time = " + time);
         }
+        LOG.info("fetch offset response ; topic:[{}], partitionId: [{}], offset: [{}]",
+                topic, partitionId, offsetResponse.offsets(topic,partitionId)[0]);
         return offsetResponse.offsets(topic, partitionId)[0];
     }
 

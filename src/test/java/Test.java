@@ -1,4 +1,3 @@
-package cn.edu.sdu.cs.starry.kafkaConsumer;
 
 import cn.edu.sdu.cs.starry.kafkaConsumer.dynamicConsumer.stream.IMessageSender;
 import cn.edu.sdu.cs.starry.kafkaConsumer.dynamicConsumer.stream.StreamConsumer;
@@ -17,7 +16,7 @@ public class Test {
         }
         managedSet.remove(23);
         managedSet.remove(8);
-        StreamConsumer consumer = new StreamConsumer("sry","test", managedSet,new IMessageSender() {
+        StreamConsumer consumer = new StreamConsumer("sry", "test", managedSet,new IMessageSender() {
             @Override
             public void sendMessage(KafkaMessage message) throws Exception {
                /*byte[] bs = message.getMessage();

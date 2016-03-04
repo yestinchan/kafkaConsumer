@@ -9,11 +9,11 @@ repositories {
     mavenCentral()
 }
 sourceSets {
-    main {
-        java {
+//    main {
+//        java {
             sourceCompatibility = 1.7
-        }
-    }
+//        }
+//    }
 }
 
 dependencies {

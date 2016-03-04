@@ -106,7 +106,7 @@ public abstract class BaseConsumer {
      * @return fetched list for {@link KafkaMessage}
      */
     public List<KafkaMessage> fetchMessage(int fetchSize) throws KafkaCommunicationException {
-        LOG.info("begin to fetch message");
+        LOG.debug("begin to fetch message");
         List<KafkaMessage> messageAndOffsetList = new LinkedList<>();//to store all messages
         List<KafkaErrorException> partitionsWithError = new LinkedList<>();
         for (Map.Entry<BrokerInfo, ConsumerAndPartitions> entry : getManagedPartitions().entrySet()) {
