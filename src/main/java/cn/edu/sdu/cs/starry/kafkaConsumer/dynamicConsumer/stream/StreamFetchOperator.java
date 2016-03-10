@@ -33,6 +33,12 @@ public class StreamFetchOperator extends BaseFetchOperator {
     }
 
     @Override
+    public void loadHistoryOffsets(int partition) throws ConsumerLogException {
+        sendOffsetMap.put(partition, 0L);
+        logManager.loadOffsetLog(sendOffsetMap);
+    }
+
+    @Override
     public void flushOffsets() throws ConsumerLogException {
         logManager.saveOffsets(Collections.synchronizedMap(sendOffsetMap));
     }

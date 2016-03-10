@@ -66,6 +66,14 @@ public class ConsumerPool {
     }
 
     /**
+     * Add a new consumer
+     * @param partitionId
+     */
+    public synchronized void addNewConsumer(int partitionId) throws KafkaCommunicationException {
+        getConsumer(partitionId);
+    }
+
+    /**
      * Find consumer for given partitions
      *
      * @param managedPartitionSet

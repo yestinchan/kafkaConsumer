@@ -7,7 +7,7 @@ import kafka.javaapi.consumer.SimpleConsumer;
  *
  * @author xccui
  */
-public class KafkaErrorException extends Exception {
+public class KafkaErrorException extends KafkaConsumerException {
     private final SimpleConsumer consumer;
     private final String topic;
     private final int partition;

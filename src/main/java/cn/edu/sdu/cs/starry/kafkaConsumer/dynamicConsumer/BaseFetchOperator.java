@@ -56,6 +56,13 @@ public abstract class BaseFetchOperator {
     public abstract void loadHistoryOffsets() throws ConsumerLogException;
 
     /**
+     * Load history offsets from log file
+     *
+     * @throws ConsumerLogException
+     * */
+    public abstract void loadHistoryOffsets(int partition) throws ConsumerLogException;
+
+    /**
      * Fetch messages using the given simple consumer and log offsets.
      *
      * @param consumer

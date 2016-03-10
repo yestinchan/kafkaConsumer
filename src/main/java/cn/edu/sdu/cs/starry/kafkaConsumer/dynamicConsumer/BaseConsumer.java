@@ -3,10 +3,7 @@ package cn.edu.sdu.cs.starry.kafkaConsumer.dynamicConsumer;
 import cn.edu.sdu.cs.starry.kafkaConsumer.entity.BrokerInfo;
 import cn.edu.sdu.cs.starry.kafkaConsumer.entity.ConsumerAndPartitions;
 import cn.edu.sdu.cs.starry.kafkaConsumer.entity.KafkaMessage;
-import cn.edu.sdu.cs.starry.kafkaConsumer.exception.ConsumerConfigException;
-import cn.edu.sdu.cs.starry.kafkaConsumer.exception.ConsumerLogException;
-import cn.edu.sdu.cs.starry.kafkaConsumer.exception.KafkaCommunicationException;
-import cn.edu.sdu.cs.starry.kafkaConsumer.exception.KafkaErrorException;
+import cn.edu.sdu.cs.starry.kafkaConsumer.exception.*;
 import cn.edu.sdu.cs.starry.kafkaConsumer.log.FileLogManager;
 import cn.edu.sdu.cs.starry.kafkaConsumer.log.IOffsetLogManager;
 import cn.edu.sdu.cs.starry.kafkaConsumer.log.ZKLogManager;
@@ -65,6 +62,21 @@ public abstract class BaseConsumer {
         initFetchOperator();
         fetchOperator.loadHistoryOffsets();
         Runtime.getRuntime().addShutdownHook(new ShutdownHandlerThread());
+    }
+
+    /**
+     * dynamically add partition to this consumer.
+     * */
+    public void addConsumePartition(int partition) throws PartitionAlreadyInException,
+            ConsumerLogException, KafkaCommunicationException {
+        if(managedPartitionsSet.contains(partition)){
+            throw new PartitionAlreadyInException("partition : "+ partition);
+        }
+        this.managedPartitionsSet.add(partition);
+        // add new partition consumer to consumer pool
+        consumerPool.addNewConsumer(partition);
+        // load partition offset.
+        fetchOperator.loadHistoryOffsets(partition);
     }
 
     /**

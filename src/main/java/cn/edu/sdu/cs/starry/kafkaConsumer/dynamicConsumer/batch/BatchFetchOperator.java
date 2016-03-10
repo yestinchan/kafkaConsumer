@@ -51,6 +51,13 @@ public class BatchFetchOperator extends BaseFetchOperator {
     }
 
     @Override
+    public void loadHistoryOffsets(int partition) throws ConsumerLogException {
+        consumeOffsetMap.put(partition,0L);
+        logManager.loadOffsetLog(consumeOffsetMap);
+        sendOffsetMap.putAll(consumeOffsetMap);
+    }
+
+    @Override
     public void flushOffsets() throws ConsumerLogException {
         logManager.saveOffsets(Collections.unmodifiableMap(consumeOffsetMap));
     }

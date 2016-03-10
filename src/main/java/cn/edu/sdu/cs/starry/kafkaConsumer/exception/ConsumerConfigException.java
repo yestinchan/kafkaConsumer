@@ -5,7 +5,7 @@ package cn.edu.sdu.cs.starry.kafkaConsumer.exception;
  * @author SDU.xccui
  * 
  */
-public class ConsumerConfigException extends Exception {
+public class ConsumerConfigException extends KafkaConsumerException {
 	/**
 	 * 
 	 */
