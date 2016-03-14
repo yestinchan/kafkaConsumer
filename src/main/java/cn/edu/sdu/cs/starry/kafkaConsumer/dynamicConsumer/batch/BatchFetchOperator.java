@@ -27,6 +27,7 @@ public class BatchFetchOperator extends BaseFetchOperator {
         consumeOffsetMap = Collections.synchronizedMap(new TreeMap());
     }
 
+
     /**
      * Acknowledge the consumed offset
      *

@@ -26,6 +26,11 @@ public class StreamConsumer extends BaseConsumer {
     public StreamConsumer(String consumerName, String topic, Set<Integer> managedPartitionsSet, IMessageSender messageSender) throws ConsumerConfigException, ConsumerLogException {
         super(consumerName,topic, managedPartitionsSet);
         this.messageSender = messageSender;
+    }
+
+    @Override
+    public void prepare() throws ConsumerConfigException, ConsumerLogException {
+        super.prepare();
         logFlushInterval = consumerConfig.getLogFlushInterval();
         //fetchRate = consumerConfig.getFetchRate();
         shutdown = false;
