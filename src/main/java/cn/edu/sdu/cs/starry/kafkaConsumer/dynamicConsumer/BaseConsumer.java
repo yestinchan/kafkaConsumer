@@ -36,12 +36,19 @@ public abstract class BaseConsumer {
      * @throws ConsumerConfigException
      * @throws ConsumerLogException
      */
-    public BaseConsumer(String consumerName, String topic, Set<Integer> managedPartitionsSet)
-            throws ConsumerConfigException, ConsumerLogException {
+    public BaseConsumer(String consumerName, String topic, Set<Integer> managedPartitionsSet) {
         this.managedPartitionsSet = Collections.synchronizedSet(new TreeSet<Integer>());
         this.managedPartitionsSet.addAll(managedPartitionsSet);
         this.consumerName = consumerName;
         this.topic = topic;
+    }
+
+    /**
+     * Call prepare before you do anything !
+     * @throws ConsumerConfigException
+     * @throws ConsumerLogException
+     */
+    public void prepare() throws ConsumerConfigException, ConsumerLogException {
         consumerConfig = new ConsumerConfig();
         consumerConfig.initConfig();// config should be initialized first
         String zkHosts = consumerConfig.getZkHosts();
