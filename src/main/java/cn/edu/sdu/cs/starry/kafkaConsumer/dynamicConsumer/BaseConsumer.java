@@ -80,6 +80,25 @@ public abstract class BaseConsumer {
     }
 
     /**
+     * dynamically remove partition from this consumer.
+     * @param partition
+     * @throws PartitionNotInException
+     * @throws KafkaCommunicationException
+     * @throws ConsumerLogException
+     */
+    public void removeConsumePartition(int partition) throws PartitionNotInException, KafkaCommunicationException, ConsumerLogException {
+        if(!managedPartitionsSet.contains(partition)){
+            throw new PartitionNotInException("partition : "+ partition);
+        }
+        this.managedPartitionsSet.remove(partition);
+        // remove this partition consumer from consumer pool.
+        consumerPool.removeConsumer(partition);
+
+        //write history offset.
+        fetchOperator.flushOffsetAndRemovePartition(partition);
+    }
+
+    /**
      * Reconnect when encountered an exception.
      *
      * @throws KafkaCommunicationException

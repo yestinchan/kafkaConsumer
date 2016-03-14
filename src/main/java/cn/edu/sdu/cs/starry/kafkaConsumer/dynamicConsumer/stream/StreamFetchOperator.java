@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -36,6 +38,15 @@ public class StreamFetchOperator extends BaseFetchOperator {
     public void loadHistoryOffsets(int partition) throws ConsumerLogException {
         sendOffsetMap.put(partition, 0L);
         logManager.loadOffsetLog(sendOffsetMap);
+    }
+
+    @Override
+    public void flushOffsetAndRemovePartition(int partition) throws ConsumerLogException {
+        Map<Integer, Long> offsetMap = new HashMap<>();
+        offsetMap.put(partition,sendOffsetMap.get(partition));
+        logManager.saveOffsets(offsetMap);
+        //remove partition from offset map
+        sendOffsetMap.remove(partition);
     }
 
     @Override

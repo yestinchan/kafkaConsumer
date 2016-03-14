@@ -74,6 +74,17 @@ public class ConsumerPool {
     }
 
     /**
+     * Remove a consumer.
+     * @param partitionId
+     * @throws KafkaCommunicationException
+     */
+    public synchronized void removeConsumer(int partitionId) throws KafkaCommunicationException {
+        //remove from consume pool.
+        managedPartitions.remove(partitionId);
+        getConsumer(partitionId).close();
+    }
+
+    /**
      * Find consumer for given partitions
      *
      * @param managedPartitionSet

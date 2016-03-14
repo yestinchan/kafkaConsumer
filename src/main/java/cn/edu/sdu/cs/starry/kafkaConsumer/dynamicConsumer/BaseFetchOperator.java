@@ -62,6 +62,8 @@ public abstract class BaseFetchOperator {
      * */
     public abstract void loadHistoryOffsets(int partition) throws ConsumerLogException;
 
+    public abstract void flushOffsetAndRemovePartition(int partition) throws ConsumerLogException;
+
     /**
      * Fetch messages using the given simple consumer and log offsets.
      *
@@ -200,6 +202,7 @@ public abstract class BaseFetchOperator {
             }
         }
     }
+
 
     private List<KafkaErrorException> doSingleConsumerFetch(SimpleConsumer consumer,
                                                             Set<PartitionAndOffset> partitionAndOffsetSet, int fetchSize, Map<Integer, ByteBufferMessageSet> messageSetMap) {

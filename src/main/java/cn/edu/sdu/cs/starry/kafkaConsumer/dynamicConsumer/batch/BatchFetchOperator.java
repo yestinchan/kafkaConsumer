@@ -6,11 +6,8 @@ import cn.edu.sdu.cs.starry.kafkaConsumer.log.IOffsetLogManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeMap;
 
 /**
  * Message fetcher and LOG for batch
@@ -55,6 +52,16 @@ public class BatchFetchOperator extends BaseFetchOperator {
         consumeOffsetMap.put(partition,0L);
         logManager.loadOffsetLog(consumeOffsetMap);
         sendOffsetMap.putAll(consumeOffsetMap);
+    }
+
+    @Override
+    public void flushOffsetAndRemovePartition(int partition) throws ConsumerLogException {
+        Map<Integer, Long> offsetMap = new HashMap<>();
+        offsetMap.put(partition,consumeOffsetMap.get(partition));
+        logManager.saveOffsets(offsetMap);
+        //remove partition from offset map
+        consumeOffsetMap.remove(partition);
+        sendOffsetMap.remove(partition);
     }
 
     @Override
