@@ -45,6 +45,10 @@ public class StreamConsumer extends BaseConsumer {
                 logManager, consumerName);
     }
 
+    public void startFetchingAndPushing(boolean uptToDate, int fetchSize) throws KafkaCommunicationException {
+        startFetchingAndPushing(uptToDate, fetchSize, -1);
+    }
+
     /**
      * Start fetching messages for stream from kafkaConsumer with given fetch rate
      * etc. NOT thread safe!!!!!
@@ -58,10 +62,12 @@ public class StreamConsumer extends BaseConsumer {
         }
         int fetchTimes = 0;
         while (!shutdown) {
-            try {
-                Thread.sleep(fetchRate);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            if(fetchRate > 0){
+                try {
+                    Thread.sleep(fetchRate);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
             List<KafkaMessage> messageAndOffsetList = fetchMessage(fetchSize);
             for (KafkaMessage message : messageAndOffsetList) {
