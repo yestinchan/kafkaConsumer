@@ -1,6 +1,7 @@
 package cn.edu.sdu.cs.starry.kafkaConsumer.dynamicConsumer.batch;
 
 import cn.edu.sdu.cs.starry.kafkaConsumer.dynamicConsumer.BaseConsumer;
+import cn.edu.sdu.cs.starry.kafkaConsumer.dynamicConsumer.ConsumerConfig;
 import cn.edu.sdu.cs.starry.kafkaConsumer.exception.ConsumerConfigException;
 import cn.edu.sdu.cs.starry.kafkaConsumer.exception.ConsumerLogException;
 import cn.edu.sdu.cs.starry.kafkaConsumer.exception.KafkaErrorException;
@@ -20,6 +21,11 @@ public class BatchConsumer extends BaseConsumer {
     private static Logger LOG = LoggerFactory.getLogger(BatchConsumer.class);
 
     private Object ackLock = new Object();
+
+    public BatchConsumer(ConsumerConfig consumerConfig, String consumerName, String topic, Set<Integer> managedPartitionsSet)
+            throws ConsumerConfigException, ConsumerLogException {
+        super(consumerConfig, consumerName, topic, managedPartitionsSet);
+    }
 
     public BatchConsumer(String consumerName, String topic, Set<Integer> managedPartitionsSet)
             throws ConsumerConfigException, ConsumerLogException {

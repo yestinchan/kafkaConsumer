@@ -37,6 +37,22 @@ public abstract class BaseConsumer {
      * @throws ConsumerLogException
      */
     public BaseConsumer(String consumerName, String topic, Set<Integer> managedPartitionsSet) {
+        consumerConfig = new ConsumerConfig();
+        this.managedPartitionsSet = Collections.synchronizedSet(new TreeSet<Integer>());
+        this.managedPartitionsSet.addAll(managedPartitionsSet);
+        this.consumerName = consumerName;
+        this.topic = topic;
+    }
+
+
+    /**
+     * @param consumerName         a name to identify this consumer
+     * @param managedPartitionsSet partition ids managed by this consumer
+     * @throws ConsumerConfigException
+     * @throws ConsumerLogException
+     */
+    public BaseConsumer(ConsumerConfig consumerConfig, String consumerName, String topic, Set<Integer> managedPartitionsSet) {
+        this.consumerConfig = consumerConfig;
         this.managedPartitionsSet = Collections.synchronizedSet(new TreeSet<Integer>());
         this.managedPartitionsSet.addAll(managedPartitionsSet);
         this.consumerName = consumerName;
@@ -49,7 +65,6 @@ public abstract class BaseConsumer {
      * @throws ConsumerLogException
      */
     public void prepare() throws ConsumerConfigException, ConsumerLogException {
-        consumerConfig = new ConsumerConfig();
         consumerConfig.initConfig();// config should be initialized first
         String zkHosts = consumerConfig.getZkHosts();
         if (null != zkHosts) {

@@ -1,6 +1,7 @@
 package cn.edu.sdu.cs.starry.kafkaConsumer.dynamicConsumer.stream;
 
 import cn.edu.sdu.cs.starry.kafkaConsumer.dynamicConsumer.BaseConsumer;
+import cn.edu.sdu.cs.starry.kafkaConsumer.dynamicConsumer.ConsumerConfig;
 import cn.edu.sdu.cs.starry.kafkaConsumer.entity.KafkaMessage;
 import cn.edu.sdu.cs.starry.kafkaConsumer.exception.ConsumerConfigException;
 import cn.edu.sdu.cs.starry.kafkaConsumer.exception.ConsumerLogException;
@@ -22,6 +23,11 @@ public class StreamConsumer extends BaseConsumer {
     private IMessageSender messageSender;
     private int logFlushInterval;
     //private int fetchRate;
+
+    public StreamConsumer(ConsumerConfig consumerConfig, String consumerName, String topic, Set<Integer> managedPartitionsSet, IMessageSender messageSender) throws ConsumerConfigException, ConsumerLogException {
+        super(consumerConfig, consumerName,topic, managedPartitionsSet);
+        this.messageSender = messageSender;
+    }
 
     public StreamConsumer(String consumerName, String topic, Set<Integer> managedPartitionsSet, IMessageSender messageSender) throws ConsumerConfigException, ConsumerLogException {
         super(consumerName,topic, managedPartitionsSet);

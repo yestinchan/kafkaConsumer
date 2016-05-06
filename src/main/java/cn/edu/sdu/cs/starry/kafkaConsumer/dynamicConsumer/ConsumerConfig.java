@@ -25,7 +25,9 @@ public class ConsumerConfig {
             .getLogger(ConsumerConfig.class);
 
     // Properties config file paths
-    private static final String KAFKA_CONSUMER_PROPERTIES_PATH = "conf/kafka8/kafkaConsumer.properties";
+    private static final String DEFAULT_CONSUMER_PROPERTIES_PATH = "conf/kafka8/kafkaConsumer.properties";
+
+    private String consumerPropertiesPath = null;
 
     // Properties Keys
     private static final String HOSTS_KEY = "brokers";
@@ -52,10 +54,14 @@ public class ConsumerConfig {
     // Default values
     private static final int LOG_FLUSH_INTERVAL_DEFAULT = 10;
 
-    public ConsumerConfig() throws ConsumerConfigException {
+    public ConsumerConfig() {
+        this(DEFAULT_CONSUMER_PROPERTIES_PATH);
+    }
+
+    public ConsumerConfig(String consumerPropertiesPath){
         kafkaConsumerProperties = new Properties();
         brokers = new ArrayList<>();
-        loadPropertiesFiles();
+        this.consumerPropertiesPath = consumerPropertiesPath;
     }
 
     /**
@@ -64,6 +70,7 @@ public class ConsumerConfig {
      * @throws cn.edu.sdu.cs.starry.kafkaConsumer.exception.ConsumerConfigException
      */
     public void initConfig() throws ConsumerConfigException {
+        loadPropertiesFiles();
         parseServerConfig();
         parseStaticConsumerConfig();
     }
@@ -100,24 +107,24 @@ public class ConsumerConfig {
     private void loadPropertiesFiles() throws ConsumerConfigException {
         LOG.info("Start loading properties...");
         LOG.info("KAFKA_CONSUMER_PROPERTIES_PATH: "
-                + KAFKA_CONSUMER_PROPERTIES_PATH);
+                + consumerPropertiesPath);
         try {
             kafkaConsumerProperties.load(new FileReader(
-                    KAFKA_CONSUMER_PROPERTIES_PATH));
+                    consumerPropertiesPath));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             throw new ConsumerConfigException("Can not find file: "
-                    + KAFKA_CONSUMER_PROPERTIES_PATH);
+                    + consumerPropertiesPath);
         } catch (IOException e) {
             e.printStackTrace();
             throw new ConsumerConfigException("Error reading file: "
-                    + KAFKA_CONSUMER_PROPERTIES_PATH);
+                    + consumerPropertiesPath);
         }
     }
 
     private void parseServerConfig() throws ConsumerConfigException {
         String hostsStr = kafkaConsumerProperties.getProperty(HOSTS_KEY);
-        checkPropertyExist(hostsStr, HOSTS_KEY, KAFKA_CONSUMER_PROPERTIES_PATH);
+        checkPropertyExist(hostsStr, HOSTS_KEY, consumerPropertiesPath);
         String[] hostStrArray = hostsStr.split(",");
         for (String hostStr : hostStrArray) {
             String[] singleHost = hostStr.split(":");
@@ -140,7 +147,7 @@ public class ConsumerConfig {
         // timeOut
         String timeOutStr = kafkaConsumerProperties.getProperty(TIME_OUT_KEY);
         checkPropertyExist(timeOutStr, TIME_OUT_KEY,
-                KAFKA_CONSUMER_PROPERTIES_PATH);
+                consumerPropertiesPath);
         try {
             timeOut = Integer.valueOf(timeOutStr.trim());
         } catch (NumberFormatException ex) {
@@ -148,13 +155,13 @@ public class ConsumerConfig {
                     + timeOutStr);
         }
         checkIntValueGreaterThan(timeOut, 0, TIME_OUT_KEY,
-                KAFKA_CONSUMER_PROPERTIES_PATH);
+                consumerPropertiesPath);
         LOG.info("Using timeOut: " + timeOut);
         // bufferSize
         String bufferSizeStr = kafkaConsumerProperties
                 .getProperty(BUFFER_SIZE_KEY);
         checkPropertyExist(bufferSizeStr, BUFFER_SIZE_KEY,
-                KAFKA_CONSUMER_PROPERTIES_PATH);
+                consumerPropertiesPath);
         try {
             bufferSize = Integer.valueOf(bufferSizeStr.trim());
         } catch (NumberFormatException ex) {
@@ -162,13 +169,13 @@ public class ConsumerConfig {
                     + bufferSizeStr);
         }
         checkIntValueGreaterThan(bufferSize, 0, BUFFER_SIZE_KEY,
-                KAFKA_CONSUMER_PROPERTIES_PATH);
+                consumerPropertiesPath);
         LOG.info("Using bufferSize: " + bufferSize);
         // fetchRate
         String fetchRateStr = kafkaConsumerProperties
                 .getProperty(FETCH_RATE_KEY);
         checkPropertyExist(fetchRateStr, FETCH_RATE_KEY,
-                KAFKA_CONSUMER_PROPERTIES_PATH);
+                consumerPropertiesPath);
         try {
             fetchRate = Integer.valueOf(fetchRateStr.trim());
         } catch (NumberFormatException ex) {
@@ -176,7 +183,7 @@ public class ConsumerConfig {
                     + fetchRateStr);
         }
         checkIntValueGreaterThan(fetchRate, 0, FETCH_RATE_KEY,
-                KAFKA_CONSUMER_PROPERTIES_PATH);
+                consumerPropertiesPath);
         LOG.info("Loaded fetchRate: " + fetchRate);
         String logFlushIntervalStr = kafkaConsumerProperties.getProperty(
                 LOG_FLUSH_INTERVAL_KEY,
@@ -196,14 +203,14 @@ public class ConsumerConfig {
         zkHosts = kafkaConsumerProperties.getProperty(ZK_HOSTS_KEY);
         try {
             checkPropertyExist(zkHosts, ZK_HOSTS_KEY,
-                    KAFKA_CONSUMER_PROPERTIES_PATH);
+                    consumerPropertiesPath);
             LOG.info("Using " + ZK_HOSTS_KEY + ":" + zkHosts);
         } catch (ConsumerConfigException ex) {
             LOG.info(ZK_HOSTS_KEY + " not found. Try to find dataDir");
             // dataDir
             dataDir = kafkaConsumerProperties.getProperty(DATA_DIR_KEY);
             checkPropertyExist(dataDir, DATA_DIR_KEY,
-                    KAFKA_CONSUMER_PROPERTIES_PATH);
+                    consumerPropertiesPath);
             File file = new File(dataDir);
             if (!file.exists() && !file.mkdirs()) {
                 throw new ConsumerConfigException("DataDir '" + dataDir
