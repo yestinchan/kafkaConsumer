@@ -24,6 +24,10 @@ public class BatchConsumer extends BaseConsumer {
     public BatchConsumer(String consumerName, String topic, Set<Integer> managedPartitionsSet)
             throws ConsumerConfigException, ConsumerLogException {
         super(consumerName, topic, managedPartitionsSet);
+    }
+
+    public void prepare() throws ConsumerConfigException, ConsumerLogException {
+        super.prepare();
         LOG.info("Finished initializing, then set batchOffset");
         try {
             setBatchOffsets();
