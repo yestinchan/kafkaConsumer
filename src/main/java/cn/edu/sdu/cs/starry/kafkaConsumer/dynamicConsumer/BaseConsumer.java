@@ -162,11 +162,18 @@ public abstract class BaseConsumer {
         LOG.debug("begin to fetch message");
         List<KafkaMessage> messageAndOffsetList = new LinkedList<>();//to store all messages
         List<KafkaErrorException> partitionsWithError = new LinkedList<>();
+        if( getManagedPartitions().size() == 0){
+            LOG.warn("no partitions assigned, will return directly");
+            return messageAndOffsetList;
+        }
         for (Map.Entry<BrokerInfo, ConsumerAndPartitions> entry : getManagedPartitions().entrySet()) {
             Map<Integer, List<KafkaMessage>> messagesOnSingleBrokers = new TreeMap<>();//to store messages on brokers
             // fetch messages on each broker
-            LOG.debug("Fetch broker " + entry.getKey().getHost());
-            LOG.debug("partitionSet " + entry.getValue().partitionSet);
+
+            if(LOG.isDebugEnabled()){
+                LOG.debug("Fetch broker [{}]", entry.getKey().getHost());
+                LOG.debug("partitionSet [{}]",  entry.getValue().partitionSet);
+            }
             partitionsWithError = fetchOperator.fetchMessage(
                     entry.getValue().consumer,
                     entry.getValue().partitionSet, fetchSize, messagesOnSingleBrokers);
@@ -175,8 +182,10 @@ public abstract class BaseConsumer {
             }
         }
         for (KafkaErrorException error : partitionsWithError) {
-            LOG.error("Error while fetching messages from partition from " + error.getPartition(), error);
-            LOG.error("Try to reset partition [{}] from topic [{}]", error.getPartition(), error.getTopic());
+            if(LOG.isDebugEnabled()){
+                LOG.error("Error while fetching messages from partition from {}", error.getPartition(), error);
+                LOG.error("Try to reset partition [{}] from topic [{}]", error.getPartition(), error.getTopic());
+            }
             consumerPool.clearOldPartitionInfo(error.getPartition()); //First clear the old partition information.
             consumerPool.getConsumer(error.getPartition());//Then find the partition again.
         }

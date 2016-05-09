@@ -106,7 +106,8 @@ public abstract class BaseFetchOperator {
                         fetchOffset = mo.nextOffset();
                     }
                 }
-                LOG.debug("Update offset for " + partitionId + " with offset " + fetchOffset);
+                if(LOG.isDebugEnabled())
+                    LOG.debug("Update offset for {} with offset {}", partitionId , fetchOffset);
                 sendOffsetMap.put(partitionId, fetchOffset);
                 messageOnBrokers.put(partitionId, messageAndOffsetList);
             }
@@ -186,8 +187,9 @@ public abstract class BaseFetchOperator {
         if (offsetResponse.hasError()) {
             throw new KafkaErrorException(ErrorMapping.exceptionFor(offsetResponse.errorCode(topic, partitionId)), offsetResponse.errorCode(topic, partitionId), consumer, topic, partitionId, "fetchOffset, time = " + time);
         }
-        LOG.info("fetch offset response ; topic:[{}], partitionId: [{}], offset: [{}]",
-                topic, partitionId, offsetResponse.offsets(topic,partitionId)[0]);
+        if(LOG.isInfoEnabled())
+            LOG.info("fetch offset response ; topic:[{}], partitionId: [{}], offset: [{}]",
+                   topic, partitionId, offsetResponse.offsets(topic,partitionId)[0]);
         return offsetResponse.offsets(topic, partitionId)[0];
     }
 
