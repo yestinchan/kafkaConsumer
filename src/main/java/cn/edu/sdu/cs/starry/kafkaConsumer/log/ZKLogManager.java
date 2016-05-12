@@ -24,16 +24,17 @@ import org.slf4j.LoggerFactory;
  */
 public class ZKLogManager implements IOffsetLogManager, Watcher {
     private static Logger LOG = LoggerFactory.getLogger(ZKLogManager.class);
-    public static final String PATH_PREFIX = "/starry/kafkaConsumer/dynamic/";
+//    public static final String PATH_PREFIX = "/starry/kafkaConsumer/dynamic/";
     private static final int SESSION_TIME_OUT = 5000;
     private String zkHosts;
     private String zkBasePath;
     private ZooKeeper zooKeeper;
     private HashMap<Integer, String> partitionNodePathMap;
 
-    public ZKLogManager(String zkHosts, String consumerName, String topic)
+    public ZKLogManager(String prefix, String zkHosts, String consumerName, String topic)
             throws ConsumerLogException {
-        zkBasePath = PATH_PREFIX + consumerName + "/" + topic;
+        if(!prefix.endsWith("/")) prefix+="/";
+        zkBasePath = prefix + consumerName + "/" + topic;
         this.zkHosts = zkHosts;
         partitionNodePathMap = new HashMap<>();
         connect();
@@ -154,7 +155,7 @@ public class ZKLogManager implements IOffsetLogManager, Watcher {
     }
 
     public static void main(String[] args) throws ConsumerLogException {
-        ZKLogManager manager = new ZKLogManager("172.16.0.158:2181", "S4",
+        ZKLogManager manager = new ZKLogManager("/starry/kafkaConsumer/dynamic/","172.16.0.158:2181", "S4",
                 "jnits");
         Map<Integer, Long> logMap = new HashMap<Integer, Long>();
         logMap.put(0, 0L);

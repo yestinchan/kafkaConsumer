@@ -39,6 +39,10 @@ public class ConsumerConfig {
 
     private static final String ZK_HOSTS_KEY = "zkHosts";
     private static final String DATA_DIR_KEY = "dataDir";
+    private static final String ZK_BASE_PATH_KEY = "zkBasePath";
+
+    private static final String ZK_BASE_PATH_DEFAULT = "/starry/kafkaConsumer/default/dynamic/";
+
     private Properties kafkaConsumerProperties;
 
     // KafkaServer properties
@@ -51,6 +55,7 @@ public class ConsumerConfig {
     private int logFlushInterval;
     private String zkHosts;
     private String dataDir;
+    private String zkBasePath;
     // Default values
     private static final int LOG_FLUSH_INTERVAL_DEFAULT = 10;
 
@@ -218,7 +223,9 @@ public class ConsumerConfig {
             }
             LOG.info("Using dataDir: " + dataDir + " and FileLogManager");
         }
-
+        //zkBasePath
+        zkBasePath = kafkaConsumerProperties.getProperty(ZK_BASE_PATH_KEY, ZK_BASE_PATH_DEFAULT);
+        LOG.info("Using zkBasePath : {}", zkBasePath);
     }
 
     private void checkPropertyExist(String property, String propertyKey,
