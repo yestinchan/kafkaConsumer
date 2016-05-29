@@ -69,7 +69,7 @@ public abstract class BaseConsumer {
         String zkHosts = consumerConfig.getZkHosts();
         if (null != zkHosts) {
             LOG.info("Using ZKLogManager");
-            logManager = new ZKLogManager(zkHosts, consumerName, topic);
+            logManager = new ZKLogManager(consumerConfig.getZkBasePath() ,zkHosts, consumerName, topic);
         } else {
             LOG.info("Using FileLogManager");
             logManager = new FileLogManager(consumerConfig.getDataDir(), topic);

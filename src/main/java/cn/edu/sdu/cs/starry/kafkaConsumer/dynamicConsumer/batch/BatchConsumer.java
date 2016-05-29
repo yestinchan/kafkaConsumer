@@ -4,6 +4,7 @@ import cn.edu.sdu.cs.starry.kafkaConsumer.dynamicConsumer.BaseConsumer;
 import cn.edu.sdu.cs.starry.kafkaConsumer.dynamicConsumer.ConsumerConfig;
 import cn.edu.sdu.cs.starry.kafkaConsumer.exception.ConsumerConfigException;
 import cn.edu.sdu.cs.starry.kafkaConsumer.exception.ConsumerLogException;
+import cn.edu.sdu.cs.starry.kafkaConsumer.exception.KafkaCommunicationException;
 import cn.edu.sdu.cs.starry.kafkaConsumer.exception.KafkaErrorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,6 +74,16 @@ public class BatchConsumer extends BaseConsumer {
                 fetchOperator.handleLogError();
             }
         }
+    }
+
+    /**
+     * Set offset to a time
+     * @see kafka.api.OffsetRequest
+     * @param time
+     * @throws KafkaCommunicationException
+     */
+    public void setOffsetTo(long time) throws KafkaCommunicationException {
+        setAllOffsetsTo(time);
     }
 
     @Override

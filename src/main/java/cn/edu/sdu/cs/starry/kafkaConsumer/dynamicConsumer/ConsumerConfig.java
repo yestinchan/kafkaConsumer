@@ -104,6 +104,10 @@ public class ConsumerConfig {
         return zkHosts;
     }
 
+    public String getZkBasePath() {
+        return zkBasePath;
+    }
+
     /**
      * Load properties from files
      *
