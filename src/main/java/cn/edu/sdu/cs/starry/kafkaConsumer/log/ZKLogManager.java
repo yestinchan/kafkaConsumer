@@ -44,7 +44,7 @@ public class ZKLogManager implements IOffsetLogManager, Watcher {
         try {
             zooKeeper = new ZooKeeper(this.zkHosts, SESSION_TIME_OUT, this);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error("connect error", e);
             throw new ConsumerLogException(e);
         }
     }
@@ -88,18 +88,18 @@ public class ZKLogManager implements IOffsetLogManager, Watcher {
                                         partitionNodePath, this,
                                         partitionNodeStat), "utf-8")));
                     } catch (Exception ex) {
-                        ex.printStackTrace();
+                        LOG.error("exception while putting offset map ", ex);
                     }
                 }
             }
         } catch (KeeperException e) {
-            e.printStackTrace();
+            LOG.error("keeper exception ", e);
             throw new ConsumerLogException(e);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            LOG.error("interrupted ", e);
             throw new ConsumerLogException(e);
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            LOG.error("unexpected exception ", e);
             throw new ConsumerLogException(e);
         }
     }
@@ -121,16 +121,17 @@ public class ZKLogManager implements IOffsetLogManager, Watcher {
                 int oldVersion = stat.getVersion();
                 stat = zooKeeper.setData(partitionNodePathMap.get(entry.getKey()),
                         String.valueOf(entry.getValue()).getBytes("utf-8"), stat.getVersion());
-                System.out.println(oldVersion + " - " + stat.getVersion());
+                LOG.info("offset writer version old:{}, new:{}, key:{}, value:{}",
+                        oldVersion , stat.getVersion(), entry.getKey(), entry.getValue());
 
             } catch (KeeperException e) {
-                e.printStackTrace();
+                LOG.error("keeper exception ", e);
                 throw new ConsumerLogException(e);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                LOG.error("intrrupted ", e);
                 throw new ConsumerLogException(e);
             } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+                LOG.error("unexpected exception ", e);
                 throw new ConsumerLogException(e);
             }
         }
@@ -141,7 +142,7 @@ public class ZKLogManager implements IOffsetLogManager, Watcher {
         try {
             zooKeeper.close();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            LOG.error("interrupted ", e);
         }
 
     }
@@ -182,7 +183,7 @@ public class ZKLogManager implements IOffsetLogManager, Watcher {
         try {
             zooKeeper.close();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            LOG.error("interrupted ", e);
         }
         connect();
     }
